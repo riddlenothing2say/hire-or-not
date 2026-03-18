@@ -25,9 +25,9 @@ export default async function handler(
     systemPrompt = fs.readFileSync(path.join(promptDir, 'prompt.md'), 'utf-8');
     fewShot = fs.readFileSync(path.join(promptDir, 'few-shot.md'), 'utf-8');
   } catch (error) {
-    console.error('Failed to read prompts:', error);
-    // Fallback if files don't exist
-    systemPrompt = '你是一个专业的招聘筛选专家。';
+    console.error('[Analyze API] Failed to read prompts from filesystem. Using default fallback prompt.', error);
+    // Fallback if files don't exist. Must contain "json" for json_object format.
+    systemPrompt = '你是一个专业的招聘筛选专家。请以 JSON 格式返回分析结果。';
   }
 
   // Check for DEEPSEEK_API_KEY to switch between real AI and mock
