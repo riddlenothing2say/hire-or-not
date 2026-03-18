@@ -11,6 +11,7 @@ import ReactMarkdown from 'react-markdown';
 
 import { analyze } from '@/api/analyze';
 import { useAnalyzeStore } from '@/store/analyze';
+import { getRemainingUsage, incrementUsage, isUsageLimitReached } from '@/utils/usageLimit';
 
 const schema = yup.object({
   experience: yup.string().required('Experience is required'),
@@ -48,12 +49,18 @@ export default function Match() {
   }, [setFeedback]);
 
   const onSubmit = async (data: FormData) => {
+    if (isUsageLimitReached()) {
+      alert(t('usage_limit_reached'));
+      return;
+    }
+
     setIsAnalyzing(true);
     setResult(null);
     setUnlocked(false);
     try {
       const res = await analyze(data.experience, data.jd);
       setResult(res);
+      incrementUsage();
     } catch (error) {
       console.error(error);
       alert('Analysis failed');
@@ -128,7 +135,7 @@ export default function Match() {
 
           <button
             type="submit"
-            disabled={isAnalyzing}
+            disabled={isAnalyzing || isUsageLimitReached()}
             className="btn-accent w-full text-base py-4 shadow-lg hover:shadow-xl transform active:scale-[0.98] disabled:opacity-50 disabled:scale-100 disabled:shadow-none transition-all cursor-pointer"
           >
             {isAnalyzing ? (
@@ -139,8 +146,11 @@ export default function Match() {
                 </svg>
                 {t('analyzing')}
               </span>
-            ) : t('analyze_button')}
+            ) : isUsageLimitReached() ? t('usage_limit_reached') : t('analyze_button')}
           </button>
+          <p className="text-center text-xs text-text-muted">
+            {t('remaining_usage', { count: getRemainingUsage() })}
+          </p>
         </form>
 
         {/* Results Area */}

@@ -9,6 +9,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import { generateResume } from '@/api/resume';
+import { getRemainingUsage, incrementUsage, isUsageLimitReached } from '@/utils/usageLimit';
 
 const schema = yup.object({
   targetPosition: yup.string().required('Target position is required'),
@@ -31,11 +32,17 @@ export default function Resume() {
   });
 
   const onSubmit = async (data: FormData) => {
+    if (isUsageLimitReached()) {
+      alert(t('usage_limit_reached'));
+      return;
+    }
+
     setIsGenerating(true);
     setResumeResult(null);
     try {
       const result = await generateResume(data);
       setResumeResult(result.content);
+      incrementUsage();
     } catch (error) {
       console.error(error);
       alert('Failed to generate resume');
@@ -97,7 +104,7 @@ export default function Resume() {
 
           <button
             type="submit"
-            disabled={isGenerating}
+            disabled={isGenerating || isUsageLimitReached()}
             className="btn-accent w-full text-base py-4 shadow-lg hover:shadow-xl transform active:scale-[0.98] disabled:opacity-50 disabled:scale-100 disabled:shadow-none transition-all cursor-pointer"
           >
             {isGenerating ? (
@@ -108,8 +115,11 @@ export default function Resume() {
                 </svg>
                 {t('generating')}
               </span>
-            ) : t('generate_resume_button')}
+            ) : isUsageLimitReached() ? t('usage_limit_reached') : t('generate_resume_button')}
           </button>
+          <p className="text-center text-xs text-text-muted">
+            {t('remaining_usage', { count: getRemainingUsage() })}
+          </p>
         </form>
 
         {/* Step 4: Resume Result (Simple Placeholder for now) */}

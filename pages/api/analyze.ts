@@ -32,6 +32,7 @@ export default async function handler(
 
   // Check for DEEPSEEK_API_KEY to switch between real AI and mock
   if (process.env.DEEPSEEK_API_KEY) {
+    console.log('[Analyze API] Starting AI analysis...');
     try {
       const response = await fetch('https://api.deepseek.com/chat/completions', {
         method: 'POST',
@@ -56,14 +57,17 @@ export default async function handler(
       });
 
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`[Analyze API] DeepSeek API error! Status: ${response.status}, Body: ${errorText}`);
         throw new Error(`DeepSeek API error: ${response.statusText}`);
       }
 
       const data = await response.json();
+      console.log('[Analyze API] AI response received successfully.');
       const aiResult = JSON.parse(data.choices[0].message.content);
       return res.status(200).json(aiResult);
     } catch (error) {
-      console.error('AI analysis failed:', error);
+      console.error('[Analyze API] AI analysis failed:', error);
       return res.status(500).json({ error: 'AI analysis failed, falling back to mock' });
     }
   }

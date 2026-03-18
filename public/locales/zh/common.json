@@ -27,5 +27,7 @@
   "generate_resume_button": "一键生成简历",
   "generating": "正在生成简历...",
   "resume_result_title": "生成结果",
-  "copy_resume": "复制简历"
+  "copy_resume": "复制简历",
+  "usage_limit_reached": "抱歉，您今天的免费额度已用完（每天3次）。请明天再试！",
+  "remaining_usage": "今日剩余额度：{{count}}次"
 }

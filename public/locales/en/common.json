@@ -27,5 +27,7 @@
   "generate_resume_button": "Generate Resume",
   "generating": "Generating Resume...",
   "resume_result_title": "Generated Result",
-  "copy_resume": "Copy Resume"
+  "copy_resume": "Copy Resume",
+  "usage_limit_reached": "Sorry, you have reached today's limit (3 times/day). Please try again tomorrow!",
+  "remaining_usage": "Remaining today: {{count}}"
 }

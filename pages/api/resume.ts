@@ -28,6 +28,7 @@ export default async function handler(
 
   // Check for DEEPSEEK_API_KEY
   if (process.env.DEEPSEEK_API_KEY) {
+    console.log('[Resume API] Starting AI resume generation...');
     try {
       const response = await fetch('https://api.deepseek.com/chat/completions', {
         method: 'POST',
@@ -51,14 +52,17 @@ export default async function handler(
       });
 
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`[Resume API] DeepSeek API error! Status: ${response.status}, Body: ${errorText}`);
         throw new Error(`DeepSeek API error: ${response.statusText}`);
       }
 
       const data = await response.json();
+      console.log('[Resume API] AI response received successfully.');
       const aiContent = data.choices[0].message.content;
       return res.status(200).json({ content: aiContent });
     } catch (error) {
-      console.error('AI resume generation failed:', error);
+      console.error('[Resume API] AI resume generation failed:', error);
       return res.status(500).json({ error: 'AI generation failed, falling back to mock' });
     }
   }
