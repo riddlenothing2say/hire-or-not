@@ -28,6 +28,8 @@
   "generating": "Generating Resume...",
   "resume_result_title": "Generated Result",
   "copy_resume": "Copy Resume",
+  "export_pdf": "Export PDF",
+  "exporting": "Exporting...",
   "usage_limit_reached": "Sorry, you have reached today's limit (3 times/day). Please try again tomorrow!",
   "remaining_usage": "Remaining today: {{count}}"
 }

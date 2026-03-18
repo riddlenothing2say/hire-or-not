@@ -2,7 +2,7 @@
 
 | 版本号 | 当前状态 | 负责人 |
 |--------|----------|--------|
-| v2     | 待 Review | Fullstack-Dev |
+| v3     | 待开发 | Fullstack-Dev |
 
 当前状态可选：`待规划` → `待开发` → `待 Review` → `已通过` / `需修改`
 
@@ -28,6 +28,11 @@
 2.  **简历生成功能**：
     - 收集用户信息（基本信息、核心经历、意向岗位）。
     - AI 生成优化后的简历内容。
+
+**v3 新增需求**：
+1.  **简历导出 PDF**：
+    - 在生成的简历下方增加「导出 PDF」按钮。
+    - 将渲染后的 Markdown 简历导出为 A4 格式的 PDF。
 
 ---
 
@@ -68,6 +73,21 @@
 - **输出**：调用 LLM 生成的真实简历内容。
 - **可写死/简化**：复用 `analyze` 的 API 调用模式，Prompt 需针对简历生成优化。
 
+**v3 任务拆解**：
+
+**Step 1: 安装依赖**
+- **输入**：无
+- **输出**：安装 `html2canvas` 和 `jspdf`。
+
+**Step 2: 实现 PDF 导出逻辑**
+- **输入**：渲染后的简历 DOM
+- **输出**：在 `pages/resume.tsx` 中实现 `exportToPDF` 函数，支持将内容转换为图片并嵌入 A4 PDF。
+- **可写死/简化**：优先保证内容完整，不处理复杂的多页分页逻辑。
+
+**Step 3: UI 完善与多语言**
+- **输入**：无
+- **输出**：在「复制简历」旁边增加「导出 PDF」按钮；更新 `common.json` 补充相关文案。
+
 ---
 
 ## 3. 实现说明（Fullstack-Dev 输出）
@@ -78,14 +98,14 @@
 |------|------|
 | `pages/index.tsx` | 首页：Landing Page，引导用户前往匹配或简历生成功能 |
 | `pages/match.tsx` | 匹配页：原首页逻辑迁移，支持经历与 JD 匹配分析 |
-| `pages/resume.tsx` | 简历生成页：收集岗位与经历，支持 Markdown 渲染与复制 |
+| `pages/resume.tsx` | 简历生成页：支持 Markdown 渲染、一键复制及导出为 A4 PDF |
 | `pages/api/analyze.ts` | 分析接口：支持从 `prompt/` 目录动态读取系统提示词与 Few-shot 示例 |
 | `pages/api/resume.ts` | 简历生成接口：支持 DeepSeek API 真实分析与 Mock 数据切换 |
 | `src/store/analyze.ts` | Zustand 状态管理：存储匹配分析结果、解锁状态及反馈 |
 | `src/types/analyze.ts` | 定义 `AnalyzeResponse`（summary, problems, rewrite）以匹配“毒舌筛选”风格 |
 | `src/styles/globals.css` | 样式配置，集成 `@tailwindcss/typography` 插件 |
 | `public/locales/{zh,en}/common.json` | 补充 Landing Page 与简历生成相关多语言文案 |
-| `package.json` | 新增 `react-markdown` 与 `@tailwindcss/typography` 依赖 |
+| `package.json` | 新增 `react-markdown`、`@tailwindcss/typography`、`html2canvas` 与 `jspdf` 依赖 |
 
 ---
 
